@@ -1,15 +1,16 @@
-﻿namespace Module8
-{
+﻿    using System;
     using System;
     using System.IO;
 
-    namespace DriveManager
+    namespace Module8
     {
         class Program
         {
             static void Main(string[] args)
             {
                 GetCatalogs(); //   Вызов метода получения директорий
+                Console.WriteLine();
+                GetCatalogsCount();
             }
 
             static void GetCatalogs()
@@ -21,7 +22,10 @@
                     string[] dirs = Directory.GetDirectories(dirName);  // Получим все директории корневого каталога
 
                     foreach (string d in dirs) // Выведем их все
+
+                    {
                         Console.WriteLine(d);
+                    }
 
                     Console.WriteLine();
                     Console.WriteLine("Файлы:");
@@ -32,6 +36,20 @@
                 }
             }
 
+            static void GetCatalogsCount()
+            {
+                try
+                {
+                    DirectoryInfo dirInfo = new DirectoryInfo(@"C:\\");
+                    if (dirInfo.Exists)
+                    {
+                        Console.WriteLine($"Количество файлов и папок {dirInfo.GetDirectories().Length + dirInfo.GetFiles().Length}");
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e.Message);
+                }
+            }
         }
     }
-}
