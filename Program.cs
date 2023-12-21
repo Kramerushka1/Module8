@@ -9,17 +9,16 @@ namespace Module8
         static void Main(string[] args)
         {
             GetCatalogs();
-            
-            Console.WriteLine();
             GetCatalogsCount();
             
-            Console.WriteLine();
             CreateNewFolder();
 
-            Console.WriteLine();
             GetCatalogs();
+            GetCatalogsCount();
 
-            Console.WriteLine();
+            DeleteNewFolder();
+
+            GetCatalogs();
             GetCatalogsCount();
         }
 
@@ -45,6 +44,7 @@ namespace Module8
                 {
                     Console.WriteLine(s);
                 }
+                Console.WriteLine();
             }
         }
         static void GetCatalogsCount()
@@ -61,6 +61,7 @@ namespace Module8
             {
                 Console.WriteLine(e.Message);
             }
+            Console.WriteLine();
         }
         static void CreateNewFolder()
         {
@@ -70,7 +71,23 @@ namespace Module8
                 dirInfo.Create();
             }
 
-            dirInfo.CreateSubdirectory("NewFolder");
+            dirInfo.CreateSubdirectory("New Folder");
+            Console.WriteLine("Папка 'New Folder' создана");
+            Console.WriteLine();
+        }
+        static void DeleteNewFolder()
+        {
+            try
+            {
+                DirectoryInfo dirInfo = new DirectoryInfo(@"E:\Sample Folder\New Folder");
+                dirInfo.Delete(true);
+                Console.WriteLine("Папка 'New Folder' удалена");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            Console.WriteLine();
         }
     }
 }
