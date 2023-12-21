@@ -1,53 +1,37 @@
 ﻿namespace Module8
 {
-    /// <summary>
-    /// Задание 8.1.5
-    /// </summary>
-    /// Сейчас пользователь видит, что у  вас на диске все файлы лежат в одной куче.
-    /// Нужно создать папки(директории) для сортировки файлов.
-    /// 
-    /// Добавьте метод для создания новой директории на диске.
-    /// Подумайте, какую коллекцию использовать для хранения созданных директорий.
-    /// Пусть директория (папка) будет представлена классом
-    /// 
-    /// Реализация метода: 
-    /// Принимает на вход имя папки, добавляет её в коллекцию папок, выводит информацию о том, что папка создана.
+    using System;
+    using System.IO;
 
-
-
-
-    /// 
-    class Drive
+    namespace DriveManager
     {
-        public Drive(string name, long totalSpace, long freeSpace)
+        class Program
         {
-            Name = name;
-            TotalSpace = totalSpace;
-            FreeSpace = freeSpace;
-        }
+            static void Main(string[] args)
+            {
+                // получим системные диски
+                DriveInfo[] drives = DriveInfo.GetDrives();
 
-        public string Name { get; }
-        public long TotalSpace { get; }
-        public long FreeSpace { get; }
-        
-        Dictionary<string, Folder> Folders = new Dictionary<string, Folder>();
-        public void CreateFolder(string name)
-        {
-            Folders.Add(name, new Folder());
-        }
+                // Пробежимся по дискам и выведем их свойства
+                foreach (DriveInfo drive in drives)
+                {
+                    Console.WriteLine($"Название: {drive.Name}");
+                    Console.WriteLine($"Тип: {drive.DriveType}");
+                    if (drive.IsReady)
+                    {
+                        Console.WriteLine($"Объем: {Math.Round (ConvertBytesToMegabytes (drive.TotalSize), 2)} Гб.");
+                        Console.WriteLine($"Свободно: {Math.Round (ConvertBytesToMegabytes (drive.TotalFreeSpace), 2)} Гб.");
+                        Console.WriteLine($"Метка: {drive.VolumeLabel}");
+                        Console.WriteLine();
+                    }
+                }
 
-    }
+                static double ConvertBytesToMegabytes(long bytes)
+                {
+                    return (float)bytes / (1024 * 1024 * 1024);
+                }
 
-    public class Folder
-    {
-        public List<string> Files { get; set; } = new List<string>();
-    }
-
-    internal class Program
-    {
-        static void Main(string[] args)
-        {
-            
+            }
         }
     }
 }
