@@ -4,39 +4,50 @@ using System.Linq;
 
 namespace Module8
 {
-    /// <summary>
-    /// Задание 8.3.2
-    /// </summary>
-    /// Сделайте так, чтобы ваша программа из задания 8.3.1 
-    /// при каждом запуске добавляла в свой исходный код комментарий 
-    /// о времени последнего запуска. 
-
     class Program
     {
         static void Main(string[] args)
         {
-            string filePath = @"E:\Skillfactory Modules\Module8\Module8\Program.cs";
-            FileInfo fileInfo = new FileInfo(filePath);
-
-
-            using (StreamWriter sw = fileInfo.AppendText()) 
+            DriveInfo[] drives = DriveInfo.GetDrives();
+            foreach (DriveInfo drive in drives.Where(d => d.DriveType == DriveType.Fixed))
             {
-                sw.WriteLine($"///Последний запуск: {DateTime.Now}");
+                WriteDriveInfo(drive);
+                DirectoryInfo root = drive.RootDirectory;
+                DirectoryInfo[] folders = root.GetDirectories();
+
+                WriteFoldereInfo(folders);
+                Console.WriteLine();
             }
+        }
 
-            using (StreamReader sr = File.OpenText(filePath))
+        public static void WriteDriveInfo(DriveInfo drive)
+        {
+            Console.WriteLine($"Имя диска: {drive.Name}");
+            Console.WriteLine($"Тип диска: {drive.DriveType}");
+
+            if (drive.IsReady)
             {
-                string str = "";
-                while ((str = sr.ReadLine()) != null)
-                {
-                    Console.WriteLine(str);
-                }
-                
+                Console.WriteLine($"Объем диска: {drive.TotalSize}");
+                Console.WriteLine($"Свободно: {drive.TotalFreeSpace}");
+                Console.WriteLine($"Метка тома: {drive.VolumeLabel}");
+            }
+        }
+        public static void WriteFoldereInfo(DirectoryInfo[] folders)
+        {
+            Console.WriteLine("Папки: ");
+            Console.WriteLine();
 
+            foreach (DirectoryInfo folder in folders)
+            {
+                try
+                {
+                    Console.WriteLine($"{folder.Name} - {DirectoryExtensions.DirSize(folder)} байт");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"{folder.Name} - Не удалось рассчитать размер {ex.Message}");
+                }
             }
         }
     }
 }
-///Последний запуск: 09.01.2024 17:10:40
-///Последний запуск: 09.01.2024 17:10:44
-///Последний запуск: 09.01.2024 17:10:51
