@@ -11,10 +11,14 @@ namespace Module8
             DriveInfo[] drives = DriveInfo.GetDrives();
             foreach (DriveInfo drive in drives.Where(d => d.DriveType == DriveType.Fixed))
             {
-                WriteDriveInfo(drive);
+
                 DirectoryInfo root = drive.RootDirectory;
                 DirectoryInfo[] folders = root.GetDirectories();
 
+                WriteDriveInfo(drive);
+                Console.WriteLine();
+                WriteFileInfo(root);
+                Console.WriteLine();
                 WriteFoldereInfo(folders);
                 Console.WriteLine();
             }
@@ -35,7 +39,6 @@ namespace Module8
         public static void WriteFoldereInfo(DirectoryInfo[] folders)
         {
             Console.WriteLine("Папки: ");
-            Console.WriteLine();
 
             foreach (DirectoryInfo folder in folders)
             {
@@ -47,6 +50,16 @@ namespace Module8
                 {
                     Console.WriteLine($"{folder.Name} - Не удалось рассчитать размер {ex.Message}");
                 }
+            }
+        }
+
+        public static void WriteFileInfo(DirectoryInfo rootFolder)
+        {
+            Console.WriteLine("Файлы: ");
+
+            foreach (FileInfo file in rootFolder.GetFiles())
+            {
+                Console.WriteLine($"{file.Name} - {file.Length} байт");
             }
         }
     }
