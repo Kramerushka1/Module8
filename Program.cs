@@ -5,51 +5,50 @@ using System.Reflection.PortableExecutable;
 
 namespace Module8
 {
+    /// <summary>
+    /// Задание 8.4.2
+    /// </summary>
+    /// Запишите  в файл из предыдущего задания информацию о доступе к нему с вашей машины. 
+    /// Пример вывода, который должен получиться: 
+    /// Файл изменен 02.11 14:53 на компьютере Windows 11
+
     class Program
     {
-        const string SettingsFileName = "Settings.cfg";
+        const string filePath = "C:\\Users\\mrdoo\\Desktop\\BinaryFile.bin";
 
         static void Main()
         {
-            WriteValues();
-
-            ReadValues();
+            WriteFile();
+            ReadFile();
         }
 
-        static void WriteValues()
+        static void WriteFile()
         {
-            using (BinaryWriter writer = new BinaryWriter(File.Open(SettingsFileName, FileMode.Create)))
+            string StringValue;
+
+            if (File.Exists(filePath))
             {
-                writer.Write(20.666F);
-                writer.Write(@"Test line");
-                writer.Write(55);
-                writer.Write(false);
+                using (BinaryWriter writer = new BinaryWriter(File.Open(filePath, FileMode.Open)))
+                {
+                    writer.Write($"Файл изменен {DateTime.Now} на компьютере {Environment.OSVersion}");
+                }
             }
         }
 
-        static void ReadValues()
+        static void ReadFile()
         {
-            float FloatValue;
             string StringValue;
-            int IntValue;
-            bool BooleanValue;
 
-            if (File.Exists(SettingsFileName))
+            if (File.Exists(filePath))
             {
-                using (BinaryReader reader = new BinaryReader(File.Open(SettingsFileName, FileMode.Open)))
+                using (BinaryReader reader = new BinaryReader(File.Open(filePath, FileMode.Open)))
                 {
-                    FloatValue = reader.ReadSingle();
                     StringValue = reader.ReadString();
-                    IntValue = reader.ReadInt32();
-                    BooleanValue = reader.ReadBoolean();
                 }
 
                 Console.WriteLine("Из файла считано");
 
-                Console.WriteLine($"Дробь: {FloatValue}");
-                Console.WriteLine($"Строка: {StringValue}");
-                Console.WriteLine($"Целое число: {IntValue}");
-                Console.WriteLine($"Булевое значение: {BooleanValue}");
+                Console.WriteLine($"{StringValue}");
             }
         }
     }
