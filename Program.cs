@@ -1,65 +1,55 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 
 namespace Module8
 {
     class Program
     {
-        static void Main(string[] args)
+        const string SettingsFileName = "Settings.cfg";
+
+        static void Main()
         {
-            DriveInfo[] drives = DriveInfo.GetDrives();
-            foreach (DriveInfo drive in drives.Where(d => d.DriveType == DriveType.Fixed))
+            WriteValues();
+
+            ReadValues();
+        }
+
+        static void WriteValues()
+        {
+            using (BinaryWriter writer = new BinaryWriter(File.Open(SettingsFileName, FileMode.Create)))
             {
-
-                DirectoryInfo root = drive.RootDirectory;
-                DirectoryInfo[] folders = root.GetDirectories();
-
-                WriteDriveInfo(drive);
-                Console.WriteLine();
-                WriteFileInfo(root);
-                Console.WriteLine();
-                WriteFoldereInfo(folders);
-                Console.WriteLine();
+                writer.Write(20.666F);
+                writer.Write(@"Test line");
+                writer.Write(55);
+                writer.Write(false);
             }
         }
 
-        public static void WriteDriveInfo(DriveInfo drive)
+        static void ReadValues()
         {
-            Console.WriteLine($"Имя диска: {drive.Name}");
-            Console.WriteLine($"Тип диска: {drive.DriveType}");
+            float FloatValue;
+            string StringValue;
+            int IntValue;
+            bool BooleanValue;
 
-            if (drive.IsReady)
+            if (File.Exists(SettingsFileName))
             {
-                Console.WriteLine($"Объем диска: {drive.TotalSize}");
-                Console.WriteLine($"Свободно: {drive.TotalFreeSpace}");
-                Console.WriteLine($"Метка тома: {drive.VolumeLabel}");
-            }
-        }
-        public static void WriteFoldereInfo(DirectoryInfo[] folders)
-        {
-            Console.WriteLine("Папки: ");
-
-            foreach (DirectoryInfo folder in folders)
-            {
-                try
+                using (BinaryReader reader = new BinaryReader(File.Open(SettingsFileName, FileMode.Open)))
                 {
-                    Console.WriteLine($"{folder.Name} - {DirectoryExtensions.DirSize(folder)} байт");
+                    FloatValue = reader.ReadSingle();
+                    StringValue = reader.ReadString();
+                    IntValue = reader.ReadInt32();
+                    BooleanValue = reader.ReadBoolean();
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"{folder.Name} - Не удалось рассчитать размер {ex.Message}");
-                }
-            }
-        }
 
-        public static void WriteFileInfo(DirectoryInfo rootFolder)
-        {
-            Console.WriteLine("Файлы: ");
+                Console.WriteLine("Из файла считано");
 
-            foreach (FileInfo file in rootFolder.GetFiles())
-            {
-                Console.WriteLine($"{file.Name} - {file.Length} байт");
+                Console.WriteLine($"Дробь: {FloatValue}");
+                Console.WriteLine($"Строка: {StringValue}");
+                Console.WriteLine($"Целое число: {IntValue}");
+                Console.WriteLine($"Булевое значение: {BooleanValue}");
             }
         }
     }
